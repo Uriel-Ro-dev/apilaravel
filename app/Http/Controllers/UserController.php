@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\JwtAuth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -113,6 +114,28 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        echo "Acción login"; die();
+         $jwtAuth = new JwtAuth();
+   //Recibir POST
+   $json = $request->input('json', null);
+   $params = json_decode($json);
+   $email =(!is_null($json) && isset($params->email)) ?
+$params->email : null;
+   $password=(!is_null($json) && isset($params->password)) ?
+$params->password : null;
+   $getToken=(!is_null($json) && isset($params->getToken)) ?
+$params->getToken : null;
+
+   if(!is_null($email) && !is_null($password) && ($getToken == null
+|| $getToken == false)){
+       $signup = $jwtAuth->signup($email, $password);
+   }elseif($getToken != null){
+       $signup = $jwtAuth->signup($email, $password, $getToken);
+   }else{
+       $signup=array(
+           'status'=>'error',
+           'message' => 'Envía tus datos por post',
+       );
+   }
+   return response()->json($signup, 200);
     }
 }
