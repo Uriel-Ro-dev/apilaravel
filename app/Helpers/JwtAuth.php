@@ -2,13 +2,14 @@
 namespace App\Helpers;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class JwtAuth{
    public $key;
    public function __construct(){
-       $this->key = 'esta-es-mi-clave-secreta-*2626';
+       $this->key = 'esta-es-mi-clave-secreta-*262026';
    }
 
    public function signup($email, $password, $getToken=null){
@@ -33,8 +34,7 @@ fallado');
                'exp' => time()+(7*24*60*60)
            );
            $jwt = JWT::encode($token, $this->key, 'HS256');
-           $decoded = JWT::decode($jwt, $this->key,
-array('HS256'));
+           $decoded = JWT::decode($jwt, new Key($this->key, 'HS256'));
            if(is_null($getToken)){
                return $jwt;
            }else{
@@ -45,8 +45,7 @@ array('HS256'));
        //Comprueba que si es valido y si es true devuelve la identidad del usuario
        $auth = false;
        try{
-           $decoded = JWT::decode($jwt, $this->key,
-array('HS256'));
+           $decoded = JWT::decode($jwt, new Key($this->key, 'HS256'));
 
        }catch(\UnexpectedValueException $e){
            $auth = false;

@@ -125,8 +125,7 @@ $params->password : null;
    $getToken=(!is_null($json) && isset($params->getToken)) ?
 $params->getToken : null;
 
-   if(!is_null($email) && !is_null($password) && ($getToken == null
-|| $getToken == false)){
+   if(!is_null($email) && !is_null($password) && ($getToken == null || $getToken == false)){
        $signup = $jwtAuth->signup($email, $password);
    }elseif($getToken != null){
        $signup = $jwtAuth->signup($email, $password, $getToken);
